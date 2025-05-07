@@ -19,11 +19,4 @@ Bienvenido al repositorio del **Hotel El Sol**, una plataforma web profesional d
 - Panel de administración básico (login/logout).
 - Experiencia 100% en español.
 
-## 📷 Vista previa
-
-![Inicio](img/captura_inicio.png)
-![Reserva](img/captura_reserva.png)
-
-## 🚀 Estructura del proyecto
-
 
