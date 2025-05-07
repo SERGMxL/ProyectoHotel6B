@@ -1,24 +1,24 @@
 <?php
 session_start();
-require_once 'includes/conexion.php'; // Incluye la conexión correcta
+require_once 'includes/conexion.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recibir los datos del formulario
-    $nombre_usuario = $_POST['nombre_usuario'];
-    $nombre_completo = $_POST['nombre_completo'];
-    $contraseña = $_POST['contraseña'];
-    $rol = $_POST['rol'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre_usuario = $_POST['nombre_usuario'] ?? '';
+    $nombre_completo = $_POST['nombre_completo'] ?? '';
+    $contraseña = $_POST['contraseña'] ?? '';
 
-    // Encriptar la contraseña antes de almacenarla
-    $contraseña_encriptada = password_hash($contraseña, PASSWORD_BCRYPT);
+    if ($nombre_usuario && $nombre_completo && $contraseña) {
+        $rol = 'recepcionista'; // Rol asignado automáticamente
+        $hash = password_hash($contraseña, PASSWORD_DEFAULT);
 
-    // Preparar la consulta para insertar el nuevo usuario
-    $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, contraseña, rol, nombre_completo) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$nombre_usuario, $contraseña_encriptada, $rol, $nombre_completo]);
+        $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, contraseña, rol, nombre_completo) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$nombre_usuario, $hash, $rol, $nombre_completo]);
 
-    // Redirigir al login o mostrar mensaje de éxito
-    header("Location: login.php");
-    exit();
+        header("Location: index.php");
+        exit();
+    } else {
+        $error = "Completa todos los campos.";
+    }
 }
 ?>
 
@@ -30,30 +30,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-box">
-            <h2>Registrarse</h2>
-            <form action="registro.php" method="POST">
-                <label for="nombre_usuario">Nombre de usuario:</label>
-                <input type="text" id="nombre_usuario" name="nombre_usuario" required><br><br>
+    <div class="form-contenedor">
+        <h2>Registro</h2>
+        <?php if (isset($error)): ?>
+            <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
+        <form method="POST" action="">
+            <label for="nombre_usuario">Nombre de usuario:</label>
+            <input type="text" name="nombre_usuario" required>
 
-                <label for="nombre_completo">Nombre completo:</label>
-                <input type="text" id="nombre_completo" name="nombre_completo" required><br><br>
+            <label for="nombre_completo">Nombre completo:</label>
+            <input type="text" name="nombre_completo" required>
 
-                <label for="contraseña">Contraseña:</label>
-                <input type="password" id="contraseña" name="contraseña" required><br><br>
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" name="contraseña" required>
 
-                <label for="rol">Rol:</label>
-                <select name="rol" id="rol" required>
-                    <option value="recepcionista">Recepcionista</option>
-                    <option value="administrador">Administrador</option>
-                </select><br><br>
-
-                <button type="submit">Registrar</button>
-            </form>
-
-            <p>Ya tienes cuenta? <a href="index.php">Inicia sesión aquí</a></p>
-        </div>
+            <button type="submit">Registrar</button>
+        </form>
+        <p>¿Ya tienes cuenta? <a href="index.php">Inicia sesión</a></p>
     </div>
 </body>
 </html>
