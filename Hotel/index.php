@@ -44,6 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <button type="submit">Entrar</button>
         </form>
+
+        <!-- Botón para acceder a la verificación de admin -->
+        <form method="GET" action="proteger_admin.php" style="margin-top: 10px;">
+            <button type="submit">Acceso Admin</button>
+        </form>
+
         <p>¿No tienes cuenta? <a href="registro.php">Regístrate aquí</a></p>
     </div>
 </body>
