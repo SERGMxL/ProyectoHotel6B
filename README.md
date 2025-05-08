@@ -24,5 +24,4 @@ Bienvenido al repositorio del **Hotel El Sol**, una plataforma web profesional d
 1. Clona el repositorio en tu servidor local o hosting con soporte para PHP:
 
 ```bash
-git clone https://github.com/tu_usuario/ProyectoHotel6B
-.git
+git clone https://github.com/tu_usuario/ProyectoHotel6B.git
