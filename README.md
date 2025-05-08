@@ -19,4 +19,10 @@ Bienvenido al repositorio del **Hotel El Sol**, una plataforma web profesional d
 - Panel de administración básico (login/logout).
 - Experiencia 100% en español.
 
+## 🚀 Cómo Ejecutarlo
 
+1. Clona el repositorio en tu servidor local o hosting con soporte para PHP:
+
+```bash
+git clone https://github.com/tu_usuario/ProyectoHotel6B
+.git
