@@ -1,3 +1,69 @@
+<?php
+// Procesar el formulario solo si se envió por POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $host = "localhost";
+    $usuario = "root";
+    $contrasena = ""; 
+    $basedatos = "hotel";
+
+    $conn = new mysqli($host, $usuario, $contrasena, $basedatos);
+
+    if ($conn->connect_error) {
+        die("Error de conexión: " . $conn->connect_error);
+    }
+
+    $habitacion = isset($_POST['habitacion']) ? $_POST['habitacion'] : '';
+    $personas = isset($_POST['personas']) ? intval($_POST['personas']) : 0;
+    $noches = isset($_POST['noches']) ? intval($_POST['noches']) : 0;
+    $servicios = isset($_POST['servicios']) ? $_POST['servicios'] : '';
+
+    if (is_array($servicios)) {
+        $servicios = implode(", ", $servicios);
+    }
+
+    if (empty($habitacion) || $personas <= 0 || $noches <= 0) {
+        echo "<script>alert('Datos incompletos o inválidos.');</script>";
+    } else {
+        $stmt = $conn->prepare("INSERT INTO reservas (habitacion, personas, noches, servicios) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("siis", $habitacion, $personas, $noches, $servicios);
+
+        if ($stmt->execute()) {
+            $reserva_id = $conn->insert_id;
+            // Mostramos el mensaje de éxito con emojis y botones
+            $mensaje_exito = '
+            <div id="mensaje-exito" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(152, 114, 145, 0.8); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+                <div style="background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 500px; width: 90%;">
+                    <h2 style="color: #FF7F50; margin-bottom: 20px;">🎉 ¡Felicidades! 🎉</h2>
+                    <p style="font-size: 18px; margin-bottom: 30px;">✅ Has hecho tu reserva exitosamente</p>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+                        <a href="facturar.php?id='.$reserva_id.'" style="background: #2196F3; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                            📄 Generar Factura
+                        </a>
+                        <button onclick="window.print()" style="background: #4CAF50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                            🖨️ Imprimir Ticket
+                        </button>
+                        <a href="inicio.php" style="background: #FF7F50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                            🏠 Volver a Inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <script>
+                // Ocultar el formulario después de enviarlo
+                document.querySelector(".formulario-reserva").style.display = "none";
+            </script>
+            ';
+            echo $mensaje_exito;
+        } else {
+            echo "<script>alert('Error al realizar la reserva: " . addslashes($stmt->error) . "');</script>";
+        }
+
+        $stmt->close();
+    }
+    $conn->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,11 +79,11 @@
             font-family: 'Arial', sans-serif;
             background-color: #f1f1f1;
             background-image: url('img/fondo-tile.jpg');
-            background-repeat: repeat; /* Repite la imagen de fondo */
+            background-repeat: repeat;
             color: #333;
         }
         .navbar {
-            background-color: rgba(255, 127, 80, 0.9); /* Fondo semitransparente */
+            background-color: rgba(255, 127, 80, 0.9);
             color: #fff;
             padding: 20px 40px;
             display: flex;
@@ -127,7 +193,7 @@
             transition: transform 0.3s;
         }
         .habitacion.active, .servicio.active {
-            border: 3px solid #FF7F50; /* Resaltar con borde */
+            border: 3px solid #FF7F50;
         }
         .precio {
             font-size: 18px;
@@ -176,6 +242,25 @@
         footer p {
             font-size: 18px;
         }
+        
+        @media print {
+            .navbar, .hero, footer, .informacion-extra, button {
+                display: none !important;
+            }
+            .formulario-reserva {
+                box-shadow: none;
+                padding: 20px;
+            }
+            body {
+                background: white;
+                color: black;
+                font-size: 14px;
+            }
+            h2 {
+                color: black !important;
+                font-size: 24px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -184,7 +269,7 @@
     <div class="navbar">
         <div class="titulo">Hotel El Sol</div>
         <div class="nav-botones">
-            <a href="index.php">Inicio</a>
+            <a href="inicio.php">Inicio</a>
             <a href="logout.php">Cerrar sesión</a>
         </div>
     </div>
@@ -202,7 +287,7 @@
         <section id="reserva" class="seccion">
             <h2>Formulario de Reserva</h2>
             <div class="formulario-reserva">
-                <form action="reservar_proceso.php" method="POST">
+                <form action="" method="POST">
                     
                     <!-- Habitaciones -->
                     <label for="habitacion">Elige una habitación:</label>
@@ -257,6 +342,10 @@
                         </div>
                     </div>
 
+                    <!-- Hidden inputs -->
+                    <input type="hidden" name="habitacion" id="habitacionSeleccionada">
+                    <input type="hidden" name="servicios[]" id="serviciosSeleccionados">
+
                     <!-- Botón de Enviar -->
                     <button type="submit">Reservar Ahora</button>
                 </form>
@@ -275,11 +364,48 @@
     </footer>
 
     <script>
+        let habitacionActual = "";
+        const habitacionInput = document.getElementById('habitacionSeleccionada');
+        const serviciosInput = document.getElementById('serviciosSeleccionados');
+
         function selectOption(optionId) {
-            // Alterna la clase 'active' en la opción seleccionada
-            const option = document.getElementById(optionId);
-            option.classList.toggle('active');
+            const element = document.getElementById(optionId);
+
+            // Habitaciones
+            if (optionId.startsWith("habitacion")) {
+                // Desactivar todas
+                document.querySelectorAll('.habitacion').forEach(el => el.classList.remove('active'));
+                // Activar seleccionada
+                element.classList.add('active');
+                habitacionActual = optionId;
+                habitacionInput.value = optionId;
+            }
+
+            // Servicios (pueden ser múltiples)
+            else {
+                element.classList.toggle('active');
+                // Obtener todos los seleccionados
+                const serviciosActivos = Array.from(document.querySelectorAll('.servicio.active')).map(el => el.id);
+                serviciosInput.value = serviciosActivos.join(',');
+            }
         }
+
+        // Validación antes de enviar el formulario
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!habitacionInput.value) {
+                alert('Por favor selecciona una habitación');
+                e.preventDefault();
+                return false;
+            }
+            
+            if (!document.getElementById('personas').value || !document.getElementById('noches').value) {
+                alert('Por favor completa todos los campos requeridos');
+                e.preventDefault();
+                return false;
+            }
+            
+            return true;
+        });
     </script>
 </body>
 </html>
