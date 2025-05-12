@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contraseña = $_POST['contraseña'] ?? '';
 
     if ($nombre_usuario && $nombre_completo && $contraseña) {
-        $rol = 'recepcionista'; // Rol asignado automáticamente
+        $rol = 'Usuario'; // Rol asignado automáticamente
         $hash = password_hash($contraseña, PASSWORD_DEFAULT);
 
         $stmt = $pdo->prepare("INSERT INTO usuario (nombre_usuario, contraseña, rol, nombre_completo) VALUES (?, ?, ?, ?)");
