@@ -11,6 +11,9 @@ if ($tabla === 'usuarios') {
 } elseif ($tabla === 'admin') {
     $stmt = $pdo->query("SELECT * FROM contraseña_admin");
     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} elseif ($tabla === 'reservas') {
+    $stmt = $pdo->query("SELECT * FROM reservas");
+    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -94,6 +97,10 @@ if ($tabla === 'usuarios') {
         <form method="GET">
             <input type="hidden" name="tabla" value="admin">
             <button type="submit">Ver Claves Admin</button>
+        </form>
+        <form method="GET">
+            <input type="hidden" name="tabla" value="reservas">
+            <button type="submit">Ver Reservaciones</button>
         </form>
     </div>
 
