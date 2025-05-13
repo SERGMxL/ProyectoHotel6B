@@ -292,17 +292,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="habitacion" id="habitacion1" onclick="selectOption('habitacion1')">
                             <img src="img/habitación1.jpg" alt="Habitación Estándar">
                             <label>Habitación Estándar</label>
-                            <p class="precio">$100 por noche</p>
+                            <p class="precio">$2300 por noche</p>
                         </div>
                         <div class="habitacion" id="habitacion2" onclick="selectOption('habitacion2')">
                             <img src="img/habitación2.jpg" alt="Vista al Mar">
                             <label>Vista al Mar</label>
-                            <p class="precio">$150 por noche</p>
+                            <p class="precio">$3200 por noche</p>
                         </div>
                         <div class="habitacion" id="habitacion3" onclick="selectOption('habitacion3')">
                             <img src="img/habitación3.jpg" alt="Suite de Lujo">
                             <label>Suite de Lujo</label>
-                            <p class="precio">$300 por noche</p>
+                            <p class="precio">$4000 por noche</p>
                         </div>
                     </div>
 
@@ -320,22 +320,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="servicio" id="spa" onclick="selectOption('spa')">
                             <img src="img/spa.jpg" alt="Spa">
                             <label>Spa</label>
-                            <p class="precio">$50</p>
+                            <p class="precio">$1500</p>
                         </div>
                         <div class="servicio" id="buffet" onclick="selectOption('buffet')">
                             <img src="img/restaurante.jpg" alt="Buffet">
                             <label>Buffet</label>
-                            <p class="precio">$30</p>
+                            <p class="precio">$1000</p>
                         </div>
                         <div class="servicio" id="pedidos_ilimitados" onclick="selectOption('pedidos_ilimitados')">
                             <img src="img/pedidos.jpg" alt="Pedidos Ilimitados">
                             <label>Pedidos Ilimitados</label>
-                            <p class="precio">$20</p>
+                            <p class="precio">$800</p>
                         </div>
                         <div class="servicio" id="todo_incluido" onclick="selectOption('todo_incluido')">
                             <img src="img/all.jpg" alt="Paquete Todo Incluido">
                             <label>Todo Incluido</label>
-                            <p class="precio">$100</p>
+                            <p class="precio">$12000</p>
                         </div>
                     </div>
 

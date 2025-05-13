@@ -14,23 +14,38 @@ $reserva = $stmt->fetch();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f1f1f1;
-            padding: 30px;
-            color: #333;
+            background-color: #f9f9f9;
+            padding: 0;
+            margin: 0;
+            color: #000;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 10px 20px;
+            background: none;
+            border-bottom: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
         }
 
         .container {
             background-color: #fff;
             max-width: 600px;
-            margin: auto;
+            margin: 30px auto;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 5px rgba(0,0,0,0.05);
         }
 
         h2 {
             text-align: center;
-            color: #ffa500;
             margin-bottom: 20px;
         }
 
@@ -41,43 +56,46 @@ $reserva = $stmt->fetch();
         }
 
         th, td {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #ffa500;
-            color: white;
+            font-weight: bold;
         }
 
         .btn-imprimir {
             display: block;
             width: 100%;
             padding: 12px;
-            background-color: #ffa500;
-            color: white;
+            background: none;
+            border: 1px solid #000;
+            color: #000;
             text-align: center;
-            text-decoration: none;
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
         }
 
         .btn-imprimir:hover {
-            background-color: #ffa500;
+            background-color: #eee;
         }
 
         @media print {
-            .btn-imprimir {
+            .navbar, .btn-imprimir {
                 display: none;
             }
         }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <a href="inicio.php">← Volver</a>
+    </div>
+
     <div class="container">
-        <h2>Hotel El Sol - Ticket de Reserva</h2>
+        <h2>Ticket de Reserva</h2>
 
         <?php if ($reserva): ?>
             <table>
