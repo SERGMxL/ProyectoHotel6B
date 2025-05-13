@@ -39,7 +39,7 @@ if ($tabla === 'usuarios') {
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f1f1f1;
+            background-color:rgb(255, 255, 255);
             background-image: url('../img/fondo-tile.jpg');
             background-repeat: repeat;
             color: #333;

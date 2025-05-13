@@ -33,15 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensaje_exito = '
             <div id="mensaje-exito" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(152, 114, 145, 0.8); z-index: 1000; display: flex; justify-content: center; align-items: center;">
                 <div style="background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 500px; width: 90%;">
-                    <h2 style="color: #FF7F50; margin-bottom: 20px;">🎉 ¡Felicidades! 🎉</h2>
+                    <h2 style="color: #FF7F50; margin-bottom: 20px;">¡Listo!</h2>
                     <p style="font-size: 18px; margin-bottom: 30px;">✅ Has hecho tu reserva exitosamente</p>
                     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
-                        <a href="facturar.php?id='.$reserva_id.'" style="background: #2196F3; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                            📄 Generar Factura
-                        </a>
-                        <button onclick="window.print()" style="background: #4CAF50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <a href="ver_ticket.php" style="background: #4CAF50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 8px;">
                             🖨️ Imprimir Ticket
-                        </button>
+                        </a>
                         <a href="inicio.php" style="background: #FF7F50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
                             🏠 Volver a Inicio
                         </a>
