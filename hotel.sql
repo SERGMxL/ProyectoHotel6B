@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-05-2025 a las 02:50:21
+-- Tiempo de generación: 13-05-2025 a las 04:05:22
 -- Versión del servidor: 10.4.32-MariaDB-log
 -- Versión de PHP: 8.0.30
 
@@ -126,7 +126,10 @@ CREATE TABLE `reservas` (
 
 INSERT INTO `reservas` (`id`, `habitacion`, `personas`, `noches`, `servicios`, `fecha`) VALUES
 (1, 'habitacion2', 2, 5, 'buffet,pedidos_ilimitados', '2025-05-13 00:23:08'),
-(3, 'habitacion1', 1, 3, 'todo_incluido', '2025-05-13 00:23:59');
+(3, 'habitacion1', 1, 3, 'todo_incluido', '2025-05-13 00:23:59'),
+(4, 'habitacion1', 1, 4, 'spa', '2025-05-13 01:15:04'),
+(5, 'habitacion1', 1, 2, 'spa', '2025-05-13 01:19:36'),
+(6, 'habitacion3', 2, 5, 'todo_incluido', '2025-05-13 01:22:58');
 
 -- --------------------------------------------------------
 
@@ -188,7 +191,7 @@ ALTER TABLE `contraseña_res`
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
