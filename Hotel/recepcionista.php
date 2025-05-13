@@ -5,27 +5,7 @@ require_once 'includes/conexion.php';
 $tabla = $_GET['tabla'] ?? null;
 $resultado = [];
 
-// Procesar eliminación
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['eliminar_usuario'])) {
-        $usuario = $_POST['nombre_usuario'];
-        $stmt = $pdo->prepare("DELETE FROM usuario WHERE nombre_usuario = ?");
-        $stmt->execute([$usuario]);
-    } elseif (isset($_POST['eliminar_reserva'])) {
-        $id = $_POST['id'];
-        $stmt = $pdo->prepare("DELETE FROM reservas WHERE id = ?");
-        $stmt->execute([$id]);
-    }
-}
-
-// Consultar tabla
-if ($tabla === 'usuarios') {
-    $stmt = $pdo->query("SELECT nombre_usuario, nombre_completo FROM usuario");
-    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} elseif ($tabla === 'admin') {
-    $stmt = $pdo->query("SELECT * FROM contraseña_admin");
-    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} elseif ($tabla === 'reservas') {
+if ($tabla === 'reservas') {
     $stmt = $pdo->query("SELECT * FROM reservas");
     $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -93,28 +73,28 @@ if ($tabla === 'usuarios') {
             background-color: #FF7F50;
             color: white;
         }
-        form.eliminar-form {
-            display: inline;
+        .btn-eliminar {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-eliminar:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <div class="titulo">Panel de Administrador</div>
+        <div class="titulo">Panel de Recepcionista</div>
         <div class="nav-botones">
             <a href="logout.php" style="color:white; text-decoration:none;">Cerrar sesión</a>
         </div>
     </div>
 
     <div class="botones">
-        <form method="GET">
-            <input type="hidden" name="tabla" value="usuarios">
-            <button type="submit">Ver Usuarios</button>
-        </form>
-        <form method="GET">
-            <input type="hidden" name="tabla" value="admin">
-            <button type="submit">Ver Claves Admin</button>
-        </form>
         <form method="GET">
             <input type="hidden" name="tabla" value="reservas">
             <button type="submit">Ver Reservaciones</button>
@@ -128,9 +108,7 @@ if ($tabla === 'usuarios') {
                     <?php foreach (array_keys($resultado[0]) as $columna): ?>
                         <th><?= htmlspecialchars($columna) ?></th>
                     <?php endforeach; ?>
-                    <?php if ($tabla === 'usuarios' || $tabla === 'reservas'): ?>
-                        <th>Acciones</th>
-                    <?php endif; ?>
+                    <th>Acciones</th> <!-- Nueva columna para botones -->
                 </tr>
             </thead>
             <tbody>
@@ -139,22 +117,12 @@ if ($tabla === 'usuarios') {
                         <?php foreach ($fila as $valor): ?>
                             <td><?= htmlspecialchars($valor) ?></td>
                         <?php endforeach; ?>
-
-                        <?php if ($tabla === 'usuarios'): ?>
-                            <td>
-                                <form method="POST" class="eliminar-form" onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
-                                    <input type="hidden" name="nombre_usuario" value="<?= htmlspecialchars($fila['nombre_usuario']) ?>">
-                                    <button type="submit" name="eliminar_usuario">Eliminar</button>
-                                </form>
-                            </td>
-                        <?php elseif ($tabla === 'reservas'): ?>
-                            <td>
-                                <form method="POST" class="eliminar-form" onsubmit="return confirm('¿Eliminar esta reserva?');">
-                                    <input type="hidden" name="id" value="<?= htmlspecialchars($fila['id']) ?>">
-                                    <button type="submit" name="eliminar_reserva">Eliminar</button>
-                                </form>
-                            </td>
-                        <?php endif; ?>
+                        <td>
+                            <form method="GET" action="eliminar_reserva.php" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta reserva?');">
+                                <input type="hidden" name="id" value="<?= $fila['id'] ?>">
+                                <button type="submit" class="btn-eliminar">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

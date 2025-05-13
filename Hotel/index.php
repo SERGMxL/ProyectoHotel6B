@@ -49,6 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="GET" action="proteger_admin.php" style="margin-top: 10px;">
             <button type="submit">Acceso Admin</button>
         </form>
+        <form method="GET" action="proteger_recepcionista.php" style="margin-top: 10px;">
+            <button type="submit">Recepción</button>
+        </form>
 
         <p>¿No tienes cuenta? <a href="registro.php">Regístrate aquí</a></p>
     </div>
