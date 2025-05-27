@@ -28,16 +28,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("siis", $habitacion, $personas, $noches, $servicios);
 
         if ($stmt->execute()) {
+            $reserva_id = $conn->insert_id;
             // Mostramos el mensaje de éxito con emojis y botones
             $mensaje_exito = '
-            <div id="mensaje-exito" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+            <div id="mensaje-exito" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(152, 114, 145, 0.8); z-index: 1000; display: flex; justify-content: center; align-items: center;">
                 <div style="background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 500px; width: 90%;">
-                    <h2 style="color: #FF7F50; margin-bottom: 20px;">🎉 ¡Felicidades! 🎉</h2>
+                    <h2 style="color: #FF7F50; margin-bottom: 20px;">¡Listo!</h2>
                     <p style="font-size: 18px; margin-bottom: 30px;">✅ Has hecho tu reserva exitosamente</p>
                     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
-                        <button onclick="window.print()" style="background: #4CAF50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                        <a href="ver_ticket.php" style="background: #4CAF50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 8px;">
                             🖨️ Imprimir Ticket
-                        </button>
+                        </a>
                         <a href="inicio.php" style="background: #FF7F50; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none; display: flex; align-items: center; gap: 8px;">
                             🏠 Volver a Inicio
                         </a>
@@ -291,17 +292,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="habitacion" id="habitacion1" onclick="selectOption('habitacion1')">
                             <img src="img/habitación1.jpg" alt="Habitación Estándar">
                             <label>Habitación Estándar</label>
-                            <p class="precio">$100 por noche</p>
+                            <p class="precio">$2300 por noche</p>
                         </div>
                         <div class="habitacion" id="habitacion2" onclick="selectOption('habitacion2')">
                             <img src="img/habitación2.jpg" alt="Vista al Mar">
                             <label>Vista al Mar</label>
-                            <p class="precio">$150 por noche</p>
+                            <p class="precio">$3200 por noche</p>
                         </div>
                         <div class="habitacion" id="habitacion3" onclick="selectOption('habitacion3')">
                             <img src="img/habitación3.jpg" alt="Suite de Lujo">
                             <label>Suite de Lujo</label>
-                            <p class="precio">$300 por noche</p>
+                            <p class="precio">$4000 por noche</p>
                         </div>
                     </div>
 
@@ -319,22 +320,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="servicio" id="spa" onclick="selectOption('spa')">
                             <img src="img/spa.jpg" alt="Spa">
                             <label>Spa</label>
-                            <p class="precio">$50</p>
+                            <p class="precio">$1500</p>
                         </div>
                         <div class="servicio" id="buffet" onclick="selectOption('buffet')">
                             <img src="img/restaurante.jpg" alt="Buffet">
                             <label>Buffet</label>
-                            <p class="precio">$30</p>
+                            <p class="precio">$1000</p>
                         </div>
                         <div class="servicio" id="pedidos_ilimitados" onclick="selectOption('pedidos_ilimitados')">
                             <img src="img/pedidos.jpg" alt="Pedidos Ilimitados">
                             <label>Pedidos Ilimitados</label>
-                            <p class="precio">$20</p>
+                            <p class="precio">$800</p>
                         </div>
                         <div class="servicio" id="todo_incluido" onclick="selectOption('todo_incluido')">
                             <img src="img/all.jpg" alt="Paquete Todo Incluido">
                             <label>Todo Incluido</label>
-                            <p class="precio">$100</p>
+                            <p class="precio">$12000</p>
                         </div>
                     </div>
 

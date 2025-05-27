@@ -1,28 +1,40 @@
 <?php
 session_start();
-require_once 'includes/conexion.php'; // Make sure this path is correct
+
+// --- Configuration for Email ---
+// IMPORTANT: Corrected the typo in the email address.
+$to_email = 'klausdepaepe@gmail.com'; // <--- CORRECTED: Removed extra ".com"
+$subject_prefix = 'Problema de Contraseña - Hotel El Sol: ';
+$from_email = 'serchortcast@gmail.com'; // Ensure this matches your sendmail.ini auth_username for Gmail
+
+$message_sent = false;
+$error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = $_POST['nombre_usuario'] ?? '';
-    $contraseña = $_POST['contraseña'] ?? '';
+    $nombre_usuario = $_POST['nombre_usuario'] ?? '';
+    $problema_descripcion = $_POST['problema_descripcion'] ?? '';
 
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM usuario WHERE nombre_usuario = ?");
-        $stmt->execute([$usuario]);
-        $usuario_db = $stmt->fetch();
+    if (!empty($nombre_usuario) && !empty($problema_descripcion)) {
+        $subject = $subject_prefix . 'Solicitud de recuperación de: ' . $nombre_usuario;
+        $body = "Se ha recibido una solicitud de recuperación de contraseña.\n\n";
+        $body .= "Nombre de usuario: " . $nombre_usuario . "\n\n";
+        $body .= "Descripción del problema:\n" . $problema_descripcion . "\n\n";
+        $body .= "--- Fin de la solicitud ---";
 
-        if ($usuario_db && password_verify($contraseña, $usuario_db['contraseña'])) {
-            $_SESSION['user_id'] = $usuario_db['id_usuario'];
-            $_SESSION['nombre_usuario'] = $usuario_db['nombre_usuario'];
-            $_SESSION['rol'] = $usuario_db['rol'];
-            header("Location: inicio.php"); // Redirect on successful login
-            exit();
+        $headers = 'From: ' . $from_email . "\r\n" .
+                   'Reply-To: ' . $from_email . "\r\n" .
+                   'X-Mailer: PHP/' . phpversion();
+
+        // Attempt to send the email
+        if (mail($to_email, $subject, $body, $headers)) {
+            $message_sent = true;
         } else {
-            $error = "Usuario o contraseña incorrectos.";
+            $error = "Error al enviar el correo. Por favor, inténtelo de nuevo más tarde. Verifique la configuración de su servidor de correo.";
+            // It's still good practice to uncomment this for detailed server-side error logging:
+            // error_log("Failed to send recovery email to " . $to_email . ": " . (error_get_last()['message'] ?? 'Unknown error'));
         }
-    } catch (PDOException $e) {
-        error_log("Database error: " . $e->getMessage());
-        $error = "Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo más tarde.";
+    } else {
+        $error = "Por favor, completa todos los campos.";
     }
 }
 ?>
@@ -31,26 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Iniciar Sesión - Hotel El Sol</title>
+    <title>Recuperar Contraseña - Hotel El Sol</title>
     <style>
-        /* estilos.css */
-
+        /* CSS Styles embedded here (replicated from your login/register pages) */
         body {
             font-family: Arial, sans-serif;
-            /* --- Background Image Styles --- */
-            background-image: url('img/playa.jpg'); /* <--- CHANGE THIS PATH to your image */
-            background-size: cover; /* Cover the entire viewport */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Do not repeat the image */
-            background-attachment: fixed; /* Make the background fixed when scrolling (optional) */
-            /* --- End Background Image Styles --- */
-
+            background-image: url('img/playa.jpg'); /* Make sure this path is correct */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh; /* Full viewport height */
+            min-height: 100vh;
             margin: 0;
-            color: #fff; /* Default text color, used for left panel */
+            color: #fff;
         }
 
         .main-container {
@@ -89,7 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             line-height: 1.4;
         }
 
-        .button-role {
+        /* Removed button-role from this specific page as they don't fit the context */
+        /* If you still want content here, you might put a logo or a single "Back to Login" link */
+        /* .button-role {
             background-color: #fff;
             color: #333;
             padding: 15px 30px;
@@ -110,11 +120,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .button-role:hover {
             background-color: #f0f0f0;
             transform: translateY(-2px);
-        }
+        } */
 
-        /* Right Panel (Login Form) */
+        /* Right Panel (Recovery Form) */
         .form-contenedor.login-panel {
-            background-color: #fff; /* White background for the login part */
+            background-color: #fff; /* White background for the form part */
             padding: 30px 40px;
             width: 60%;
             flex-grow: 1;
@@ -146,6 +156,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
         }
 
+        .success-message {
+            color: #e6ffe6;
+            background-color: #28a745;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            width: 100%;
+            text-align: center;
+        }
+
         .form-contenedor.login-panel form {
             display: flex;
             flex-direction: column;
@@ -163,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .form-contenedor.login-panel input[type="text"],
-        .form-contenedor.login-panel input[type="password"] {
+        .form-contenedor.login-panel textarea {
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -172,10 +193,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 1em;
             outline: none;
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            resize: vertical;
+            min-height: 80px;
         }
 
         .form-contenedor.login-panel input[type="text"]::placeholder,
-        .form-contenedor.login-panel input[type="password"]::placeholder {
+        .form-contenedor.login-panel textarea::placeholder {
             color: #aaa;
         }
 
@@ -244,30 +267,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="main-container">
         <div class="left-panel">
-            <h1>Hotel del Sol</h1>
-            <p>Inicia sesión y reserva ya!</p>
-            <a href="proteger_recepcionista.php" class="button-role">Recepción</a>
-            <a href="proteger_admin.php" class="button-role">Administrador</a>
-        </div>
+            <h1>¡Oh no!</h1>
+            <p>Parece que tienes problemas para acceder.</p>
+            <p>Describe tu situación y te ayudaremos a recuperarla.</p>
+            </div>
 
         <div class="form-contenedor login-panel">
-            <h2>Bienvenido Cliente</h2>
+            <h2>¿Olvidaste tu Contraseña?</h2>
             <?php if (isset($error)): ?>
                 <p class="error"><?php echo $error; ?></p>
             <?php endif; ?>
+            <?php if ($message_sent): ?>
+                <p class="success-message">¡Solicitud enviada! Nos pondremos en contacto contigo pronto.</p>
+            <?php endif; ?>
             <form method="POST" action="">
-                <label for="nombre_usuario">Email</label>
-                <input type="text" name="nombre_usuario" placeholder="ejemplo123" required>
+                <label for="nombre_usuario">Tu Nombre de Usuario o Email:</label> <input type="text" name="nombre_usuario" placeholder="Ej: micuenta123 o tu@email.com" required>
 
-                <label for="contraseña">Contraseña</label>
-                <input type="password" name="contraseña" required>
+                <label for="problema_descripcion">Describe tu problema:</label>
+                <textarea name="problema_descripcion" placeholder="Ej: No recuerdo mi contraseña o mi cuenta está bloqueada." rows="5" required></textarea>
 
-                <button type="submit">Iniciar Sesión</button>
+                <button type="submit">Enviar Solicitud</button>
             </form>
-
-            <p><a href="recuperar_contrasena.php">¿Olvidaste tu contraseña?</a></p>
-
-            <p>¿No tienes cuenta? <a href="registro.php">Regístrate aquí</a></p>
+            <p>¿Recordaste tu contraseña? <a href="index.php">Volver a Iniciar Sesión</a></p>
         </div>
     </div>
 </body>
