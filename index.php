@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="error"><?php echo $error; ?></p>
             <?php endif; ?>
             <form method="POST" action="">
-                <label for="nombre_usuario">Email</label>
+                <label for="nombre_usuario">Usuario</label>
                 <input type="text" name="nombre_usuario" placeholder="ejemplo123" required>
 
                 <label for="contraseña">Contraseña</label>
